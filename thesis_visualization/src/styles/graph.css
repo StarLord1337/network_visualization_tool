@@ -1,0 +1,5 @@
+.graph-area {
+    flex-grow: 1; /* Takes remaining width */
+    position: relative; /* Context for absolute positioning inside */
+    background-color: #f8f9fa;
+}

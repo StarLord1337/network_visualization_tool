@@ -31,7 +31,8 @@ const SIGMA_SETTINGS = {
   labelSize: 10,
   nodeReducer: (_node: string, data: any) => {
       const newData: Partial<NodeDisplayData> = { ...data, highlighted: data.highlighted || false };
-      newData.size = data.size ? data.size / 2 : 3;           
+      const degree = data.degree || 1;
+      newData.size = 3 + (Math.sqrt(degree) * 1.5);      
       return newData;
   }
 }

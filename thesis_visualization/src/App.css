@@ -43,9 +43,6 @@
   color: #888;
 }
 
-
-
-/* 1. Main Application Wrapper - Forces full viewport height */
 .app-layout {
   display: flex;
   flex-direction: column;
@@ -54,7 +51,6 @@
   overflow: hidden; /* Prevents whole-page scrolling */
 }
 
-/* 2. Header Styles */
 .app-header {
   height: var(--header-height);
   background-color: rgb(32, 32, 32);
@@ -67,31 +63,10 @@
   z-index: 10;
 }
 
-/* 3. The Content Area (Sidebar + Graph) */
 .content-wrapper {
   display: flex;
   flex: 1; /* Takes up all remaining height */
   overflow: hidden; /* Important! Keeps scrollbars inside panels, not on body */
-}
-
-/* 4. Left Sidebar (Filters) */
-.sidebar {
-  width: var(--sidebar-width);
-  background-color: white;
-  border-right: 1px solid var(--border-color);
-  display: flex;
-  flex-direction: column;
-  overflow-y: auto; /* Allows scrolling INSIDE the sidebar if filters are long */
-  padding: 20px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.02);
-  z-index: 5;
-}
-
-/* 5. Main Graph Area */
-.graph-area {
-  flex-grow: 1; /* Takes remaining width */
-  position: relative; /* Context for absolute positioning inside */
-  background-color: var(--bg-color);
 }
 
 .action-btn {

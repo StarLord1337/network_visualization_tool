@@ -1,0 +1,24 @@
+.sidebar {
+    width: 300px; /* or 25 % if realtive*/
+    background-color: white;
+    border-right: 1px solid #e9ecef;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* Allows scrolling INSIDE the sidebar if filters are long */
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0,0,0,0.02);
+    z-index: 5;
+}
+
+.filter-box {
+    background: #f8f9fa;
+    padding: 10px;
+    border-radius: 6px; 
+    margin-bottom: 20px;
+    border: 1px solid #e9ecef;
+    font-size: 0.9rem; 
+}
+
+.filter-box.compact {
+    margin-bottom: 5px;
+}

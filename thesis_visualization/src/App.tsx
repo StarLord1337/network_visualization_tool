@@ -7,6 +7,8 @@ import type { FilterState } from "./types";
 import { useGraphData } from "./hooks/useGraphData";
 import { useGraphStats } from "./hooks/useGraphStats";
 import { InfoIcon } from "./utils/helperTooltip";
+import "./styles/sidebar.css"
+import "./styles/graph.css"
 
 function App() {
   const total_nodes = 2321;
@@ -35,12 +37,10 @@ function App() {
     if (filters.isPlaying) {
       interval = setInterval(() => {
         setFilters(prev => {
-          // Move the slider 0.5% forward every tick
           const range = prev.maxTime - prev.minTime;
-          const step = range / 200; 
+          const step = range / 200; // 0.5 % per tick (400 for 0.25 % per tick)
           const nextTime = prev.currentTime + step;
           
-          // Stop if we reach the end
           if (nextTime >= prev.maxTime) {
             return { ...prev, currentTime: prev.maxTime, isPlaying: false };
           }
@@ -52,8 +52,6 @@ function App() {
     return () => clearInterval(interval);
   }, [filters.isPlaying]);
 
-
-  // --- HELPERS ---
   const togglePhase = (phase: string) => {
     const newSet = new Set(filters.selectedPhases);
     if (newSet.has(phase)) newSet.delete(phase);
@@ -94,12 +92,12 @@ function App() {
 
       <div className="content-wrapper">
       <aside className="sidebar">
-          
           <div className="filter-section">
-            <h4 style={{marginTop: '0'}}>Graph Controls</h4>
+            <h4 style={{marginTop: '0', marginBottom: '10px'}}>Graph Controls</h4>
             
-            {/* --- 1. TIMELINE PLAYER (Unchanged) --- */}
-            <div className="filter-block timeline-block" style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee' }}>
+            {/* --- 1. TIMELINE PLAYER --- */}
+            <div className="filter-block timeline-block" style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee', borderTop: '1px solid #eee' }}>
+              <h5 style={{marginTop: '10px'}}>Temporal Development</h5>
               <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#666', marginBottom: '5px' }}>
                 <span>{formatDate(filters.minTime)}</span>
                 <span style={{ fontWeight: 'bold', color: '#333' }}>{formatDate(filters.currentTime)}</span>
@@ -124,15 +122,12 @@ function App() {
                   color: 'black'
                 }}
               >
-                {filters.isPlaying ? "⏸ Pause Timeline" : "▶ Play Evolution"}
+                {filters.isPlaying ? "⏸ Pause" : "▶ Play"}
               </button>
             </div>
 
             {/* --- 2. STATS COUNTER (Unchanged) --- */}
-            <div style={{ 
-              background: '#f8f9fa', padding: '10px', borderRadius: '6px', 
-              marginBottom: '20px', border: '1px solid #e9ecef', fontSize: '0.9rem' 
-            }}>
+            <div className="filter-box">
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <strong>Nodes Visible:</strong> <span>{stats.nodeCount} ({stats.nodeCount > 0 ? ((stats.nodeCount / total_nodes) * 100).toFixed(1) : "0.0"}%)</span>
               </div>
@@ -142,8 +137,7 @@ function App() {
             </div>
 
             {/* --- 3. NEW: PHASE FILTERS (Always Visible) --- */}
-            <div className="filter-box" style={{background: '#f8f9fa', padding: '10px', borderRadius: '6px', marginBottom: '5px', border: '1px solid #e9ecef', fontSize: '0.9rem'}}>
-              
+            <div className="filter-box"> 
               {/* Header with Select All/None */}
               <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
                 <span style={{ fontSize: "0.85rem", color: "#666" }}>Filter Phases:</span>
@@ -188,7 +182,7 @@ function App() {
             </div>
 
             {/* --- 4. ESTIMATION FILTERS (Unchanged) --- */}
-            <div className="filter-box" style={{background: '#f8f9fa', padding: '10px', borderRadius: '6px', marginBottom: '5px', border: '1px solid #e9ecef', fontSize: '0.9rem'}}>
+            <div className="filter-box compact">
               <div className="filter-block">
                 <label style={{ display: 'flex', alignItems: 'center', cursor: 'pointer' }}>
                   <input 
@@ -225,8 +219,7 @@ function App() {
             </div>
 
             {/* --- 5. COLOR BY PHASE (Toggle + Static Legend) --- */}
-            <div className="filter-box" style={{background: '#f8f9fa', padding: '10px', borderRadius: '6px', marginBottom: '5px', border: '1px solid #e9ecef', fontSize: '0.9rem', opacity: isTypesEnabled ? 0.6 : 1,
-                transition: 'opacity 0.2s ease'}}>
+            <div className="filter-box compact" style={{opacity: isTypesEnabled ? 0.6 : 1, transition: 'opacity 0.2s ease'}}>
               <label style={{ display: 'flex', alignItems: 'center', cursor: isTypesEnabled ? 'default' : 'pointer' }}>
                 <input 
                   type="checkbox" 
@@ -272,8 +265,7 @@ function App() {
             </div>
 
             {/* --- 6. COLOR BY TYPES (Unchanged) --- */}
-            <div className="filter-box" style={{background: '#f8f9fa', padding: '10px', borderRadius: '6px', marginBottom: '5px', border: '1px solid #e9ecef', fontSize: '0.9rem', opacity: isColoringEnabled ? 0.6 : 1,
-                transition: 'opacity 0.2s ease'}}>
+            <div className="filter-box compact" style={{opacity: isColoringEnabled ? 0.6 : 1, transition: 'opacity 0.2s ease'}}>
                 <label style={{ display: 'flex', alignItems: 'center', cursor: isColoringEnabled ? 'default' : 'pointer' }}>
                   <input 
                     type="checkbox" 

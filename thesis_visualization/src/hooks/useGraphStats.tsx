@@ -4,6 +4,10 @@ import type { FilterState, GraphNodeAttributes } from "../types";
 
 export const useGraphStats = (nodes: any[], edges: any[], filters: FilterState) => {
   return useMemo(() => {
+    if (!nodes || !edges) {
+      return { nodeCount: 0, edgeCount: 0, phaseCounts: {}, typeCounts: {} };
+    }
+    
     const phaseCounts: Record<string, number> = {};
     const typeCounts: Record<string, number> = {};
 

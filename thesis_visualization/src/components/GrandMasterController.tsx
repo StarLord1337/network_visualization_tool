@@ -22,6 +22,10 @@ export const GraphMasterController = ({ filters, coloringEnabled, typesEnabled }
         res.zIndex = 0;
         return res; // Stop here if hidden
       }
+
+      const degree = attributes.degree || 1;
+      const baseSize = 5 + (Math.sqrt(degree) * 4); 
+      res.size = baseSize;
       
       if (coloringEnabled) {
         const nodePhase = attributes.project_phase || "Unknown";
