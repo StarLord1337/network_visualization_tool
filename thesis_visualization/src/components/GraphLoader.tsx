@@ -30,14 +30,12 @@ const SIGMA_SETTINGS = {
   defaultNodeColor: "#999",
   labelSize: 10,
   nodeReducer: (_node: string, data: any) => {
-      const newData: Partial<NodeDisplayData> = { ...data, highlighted: data.highlighted || false };
-      const degree = data.degree || 1;
-      newData.size = 3 + (Math.sqrt(degree) * 1.5);      
+      const newData: Partial<NodeDisplayData> = { ...data, highlighted: data.highlighted || false };    
       return newData;
   }
 }
 
-export const DisplayGraph = ({ filters, coloringEnabled, typesEnabled }: DisplayGraphProps) => {
+export const DisplayGraph = ({ filters, coloringEnabled, typesEnabled, sizeMetric }: DisplayGraphProps) => {
   return (
     <SigmaContainer 
       style={{ height: "100%", width: "100%" }} 
@@ -45,7 +43,7 @@ export const DisplayGraph = ({ filters, coloringEnabled, typesEnabled }: Display
     >
       <LoadGraph />
       <GraphDragManager />
-      <GraphMasterController filters={filters} coloringEnabled={coloringEnabled} typesEnabled={typesEnabled} />
+      <GraphMasterController filters={filters} coloringEnabled={coloringEnabled} typesEnabled={typesEnabled} sizeMetric={sizeMetric} />
       <div className="custom-sigma-controls">
         <ControlsContainer position={"bottom-right"}>
           <ZoomControl className="graph-btn" />

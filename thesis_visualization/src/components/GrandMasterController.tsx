@@ -6,11 +6,32 @@ import { PHASE_COLORS, TYPE_COLORS } from "../constants";
 import { isNodeVisible } from "../utils/filterLogic";
 import type { GraphNodeAttributes } from "../types";
 
-export const GraphMasterController = ({ filters, coloringEnabled, typesEnabled }: DisplayGraphProps) => {
+const MIN_NODE_SIZE = 5;
+const MAX_NODE_SIZE = 20;
+
+export const GraphMasterController = ({ filters, coloringEnabled, typesEnabled, sizeMetric }: DisplayGraphProps) => {
   const sigma = useSigma();
   const { hoveredNode, neighbors, edges } = useGraphHover();
 
   useEffect(() => {
+    const graph = sigma.getGraph();
+
+    let minVal = Infinity;
+    let maxVal = -Infinity;
+
+    if (sizeMetric !== "size") {
+      graph.forEachNode((_node, attributes) => {
+        const val = Number(attributes[sizeMetric]) || 0;
+        if (val < minVal) minVal = val;
+        if (val > maxVal) maxVal = val;
+      });
+    }
+
+    if (minVal === maxVal || minVal === Infinity) {
+      minVal = 0;
+      maxVal = 1; 
+    }
+
     // --- NODE REDUCER ---
     sigma.setSetting("nodeReducer", (node, data: any) => {
       const attributes = data as GraphNodeAttributes;
@@ -23,8 +44,17 @@ export const GraphMasterController = ({ filters, coloringEnabled, typesEnabled }
         return res; // Stop here if hidden
       }
 
-      const degree = attributes.degree || 1;
-      const baseSize = 5 + (Math.sqrt(degree) * 4); 
+      let baseSize = 5;
+
+      if (sizeMetric === "size") {
+        baseSize = 5; // Reset to a uniform size
+      } else {
+        const rawValue = Number(attributes[sizeMetric as keyof typeof attributes]) || 0;
+        let normalized = (rawValue - minVal) / (maxVal - minVal);
+        normalized = Math.sqrt(normalized); 
+        baseSize = MIN_NODE_SIZE + (normalized * (MAX_NODE_SIZE - MIN_NODE_SIZE));
+      }
+      
       res.size = baseSize;
       
       if (coloringEnabled) {
@@ -75,7 +105,7 @@ export const GraphMasterController = ({ filters, coloringEnabled, typesEnabled }
     });
 
     sigma.refresh();
-  }, [filters, coloringEnabled, typesEnabled, hoveredNode, neighbors, edges, sigma]);
+  }, [filters, coloringEnabled, typesEnabled, hoveredNode, neighbors, edges, sigma, sizeMetric]);
 
   return null;
 };

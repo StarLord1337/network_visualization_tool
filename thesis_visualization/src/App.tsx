@@ -28,6 +28,7 @@ function App() {
 
   const [isColoringEnabled, setIsColoringEnabled] = useState<boolean>(false);
   const [isTypesEnabled, setIsTypesEnabled] = useState<boolean>(false);
+  const [sizeMetric, setSizeMetric] = useState<string>("degree");
 
   const stats = useGraphStats(nodes, edges, filters);
 
@@ -322,6 +323,23 @@ function App() {
             </div>
 
           </div>
+          <div className="filter-box" style={{background: '#f8f9fa', padding: '10px', borderRadius: '6px', marginBottom: '5px', border: '1px solid #e9ecef', fontSize: '0.9rem'}}>
+              <label style={{ display: 'flex', flexDirection: 'column', fontWeight: 'bold', marginBottom: '5px', cursor: 'pointer' }}>
+                Size Nodes By:
+                <select 
+                  value={sizeMetric} 
+                  onChange={(e) => setSizeMetric(e.target.value)}
+                  style={{ marginTop: '8px', padding: '6px', borderRadius: '4px', border: '1px solid #ccc', cursor: 'pointer' }}
+                >
+                  <option value="size">Uniform Size (Reset)</option>
+                  <option value="degree">Degree</option>
+                  <option value="betweenesscentrality">Betweenness Centrality</option>
+                  <option value="closnesscentrality">Closeness Centrality</option>
+                  <option value="eigencentrality">Eigenvector Centrality</option>
+                  <option value="pageranks">Page Rank</option>
+                </select>
+              </label>
+            </div>
         </aside>
 
         <main className="graph-area">
@@ -329,6 +347,7 @@ function App() {
              filters={filters} 
              coloringEnabled={isColoringEnabled}
              typesEnabled={isTypesEnabled}
+             sizeMetric={sizeMetric}
            />
         </main>
       </div>

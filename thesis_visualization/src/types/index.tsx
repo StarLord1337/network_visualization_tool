@@ -13,6 +13,18 @@ export interface GraphNodeAttributes {
   story_point: number;
   story_points_changed: number;
   degree: number;
+  indegree: number;
+  outdegree: number;
+  closnesscentrality: number;
+  betweenesscentrality: number;
+  weighted_degree: number;
+  componentnumber: number;
+  strongcompnum: number;
+  modularity_class: number;
+  stat_inf_class: number;
+  clustering: number;
+  eigencentrality: number;
+  pageranks: number;
 }
   
 export interface FilterState {
@@ -31,6 +43,7 @@ export interface DisplayGraphProps {
   filters: FilterState
   coloringEnabled: boolean;
   typesEnabled: boolean;
+  sizeMetric: string;
 }
 
 export interface GraphDataSummary {
