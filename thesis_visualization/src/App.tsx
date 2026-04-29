@@ -23,12 +23,14 @@ function App() {
     maxTime: maxTime,
     currentTime: maxTime,
     isPlaying: false,
-    colorMode: "phase" 
+    colorMode: "phase",
+    playbackSpeed: 1 
   });
 
   const [isColoringEnabled, setIsColoringEnabled] = useState<boolean>(false);
   const [isTypesEnabled, setIsTypesEnabled] = useState<boolean>(false);
   const [sizeMetric, setSizeMetric] = useState<string>("degree");
+
 
   const stats = useGraphStats(nodes, edges, filters);
 
@@ -39,7 +41,8 @@ function App() {
       interval = setInterval(() => {
         setFilters(prev => {
           const range = prev.maxTime - prev.minTime;
-          const step = range / 200; // 0.5 % per tick (400 for 0.25 % per tick)
+          const baseStep = range / 400; // 0.5 % per tick (400 for 0.25 % per tick)
+          const step = baseStep * (prev.playbackSpeed || 1); // Adjust step by playback speed
           const nextTime = prev.currentTime + step;
           
           if (nextTime >= prev.maxTime) {
@@ -52,6 +55,23 @@ function App() {
     
     return () => clearInterval(interval);
   }, [filters.isPlaying]);
+
+  const phase1End = new Date('2018-03-29T08:53:00').getTime();
+  const phase2End = new Date('2019-03-29T06:26:00').getTime();
+  
+  const getCurrentPhase = (time: number) => {
+    if (time <= phase1End) return "Phase 1";
+    if (time <= phase2End) return "Phase 2";
+    return "Phase 3";
+  };
+
+  const jumpToPhase = (phaseNum: number) => {
+    let targetTime = filters.minTime;
+    if (phaseNum === 2) targetTime = phase1End + 1000; // Jump just past Phase 1
+    if (phaseNum === 3) targetTime = phase2End + 1000; // Jump just past Phase 2
+
+  setFilters({ ...filters, currentTime: targetTime});
+  };
 
   const togglePhase = (phase: string) => {
     const newSet = new Set(filters.selectedPhases);
@@ -83,7 +103,7 @@ function App() {
     }));
   };
 
-  const formatDate = (ts: number) => ts ? new Date(ts).toLocaleDateString() : "-";
+  const formatDate = (ts: number) => ts ? new Date(ts).toLocaleDateString('en-GB') : "-";
 
   return (
     <div className="app-layout">
@@ -98,34 +118,85 @@ function App() {
             
             {/* --- 1. TIMELINE PLAYER --- */}
             <div className="filter-block timeline-block" style={{ marginBottom: '20px', paddingBottom: '15px', borderBottom: '1px solid #eee', borderTop: '1px solid #eee' }}>
-              <h5 style={{marginTop: '10px'}}>Temporal Development</h5>
-              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#666', marginBottom: '5px' }}>
-                <span>{formatDate(filters.minTime)}</span>
-                <span style={{ fontWeight: 'bold', color: '#333' }}>{formatDate(filters.currentTime)}</span>
-                <span>{formatDate(filters.maxTime)}</span>
-              </div>
-              
-              <input 
-                type="range" 
-                min={filters.minTime} 
-                max={filters.maxTime} 
-                value={filters.currentTime}
-                onChange={(e) => setFilters({ ...filters, currentTime: Number(e.target.value) })}
-                style={{ width: '100%', cursor: 'pointer' }} 
-              />
-              
-              <button 
-                onClick={() => setFilters({ ...filters, isPlaying: !filters.isPlaying })}
-                style={{ 
-                  width: '100%', marginTop: '10px', padding: '6px', cursor: 'pointer',
-                  background: filters.isPlaying ? '#ffeba7' : '#e3f2fd',
-                  border: '1px solid #ccc', borderRadius: '4px',
-                  color: 'black'
-                }}
-              >
-                {filters.isPlaying ? "⏸ Pause" : "▶ Play"}
-              </button>
-            </div>
+      
+      {/* Header and Current Phase Label */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '10px' }}>
+        <h5 style={{ margin: 0 }}>Temporal Development</h5>
+        <span style={{ 
+          background: '#333', color: 'white', padding: '2px 8px', 
+          borderRadius: '12px', fontSize: '0.75rem', fontWeight: 'bold' 
+        }}>
+          {getCurrentPhase(filters.currentTime)}
+        </span>
+      </div>
+
+      {/* Time Display */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', color: '#666', marginTop: '10px', marginBottom: '5px' }}>
+        <span>{formatDate(filters.minTime)}</span>
+        <span style={{ fontWeight: 'bold', color: '#333' }}>{formatDate(filters.currentTime)}</span>
+        <span>{formatDate(filters.maxTime)}</span>
+      </div>
+      
+      {/* The Range Bar */}
+      <input 
+        type="range" 
+        min={filters.minTime} 
+        max={filters.maxTime} 
+        value={filters.currentTime}
+        onChange={(e) => setFilters({ ...filters, currentTime: Number(e.target.value) })}
+        style={{ width: '100%', cursor: 'pointer' }} 
+      />
+      
+      {/* Play Controls & Speed */}
+      <div style={{ display: 'flex', gap: '10px', marginTop: '10px' }}>
+        <button 
+          onClick={() => setFilters({ ...filters, isPlaying: !filters.isPlaying })}
+          style={{ 
+            flex: 1, padding: '6px', cursor: 'pointer',
+            background: filters.isPlaying ? '#ffeba7' : '#e3f2fd',
+            border: '1px solid #ccc', borderRadius: '4px',
+            color: 'black', fontWeight: 'bold'
+          }}
+        >
+          {filters.isPlaying ? "⏸ Pause" : "▶ Play"}
+        </button>
+
+        <select 
+          value={filters.playbackSpeed || 1}
+          onChange={(e) => setFilters({ ...filters, playbackSpeed: Number(e.target.value) })}
+          style={{ padding: '6px', borderRadius: '4px', border: '1px solid #ccc', cursor: 'pointer', background: 'white', color: 'black' }}
+        >
+          <option value={0.25}>0.25x speed</option>
+          <option value={0.5}>0.5x Speed</option>
+          <option value={1}>1.0x Speed</option>
+          <option value={2}>2.0x Speed</option>
+          <option value={5}>5.0x Speed</option>
+        </select>
+      </div>
+
+      {/* Phase Quick-Jumps */}
+      <div style={{ display: 'flex', gap: '5px', marginTop: '10px' }}>
+        <button 
+          onClick={() => jumpToPhase(1)}
+          style={{ flex: 1, fontSize: '0.7rem', padding: '4px', cursor: 'pointer', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: '3px', color: 'black' }}
+        >
+          ⏭ Phase 1
+        </button>
+        <button 
+          onClick={() => jumpToPhase(2)}
+          style={{ flex: 1, fontSize: '0.7rem', padding: '4px', cursor: 'pointer', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: '3px', color: 'black' }}
+        >
+          ⏭ Phase 2
+        </button>
+        <button 
+          onClick={() => jumpToPhase(3)}
+          style={{ flex: 1, fontSize: '0.7rem', padding: '4px', cursor: 'pointer', background: '#f5f5f5', border: '1px solid #ddd', borderRadius: '3px', color: 'black' }}
+        >
+          ⏭ Phase 3
+        </button>
+      </div>
+
+    </div>
 
             {/* --- 2. STATS COUNTER (Unchanged) --- */}
             <div className="filter-box">
@@ -198,7 +269,7 @@ function App() {
                   />
                   Has Formal Estimation
 
-                  {!filters.showFormalEstimation && (<InfoIcon text="something really helpful" />)}
+                  {!filters.showFormalEstimation && (<InfoIcon text="Show only issues that were formally estimated. Filter out the rest." />)}
                 </label>
 
                 {filters.showFormalEstimation && (
@@ -212,7 +283,7 @@ function App() {
                       />
                       Changed Estimation Only
 
-                      {!filters.showChangedEstimation && (<InfoIcon text="something really helpful" />)}
+                      {!filters.showChangedEstimation && (<InfoIcon text="Show the issues, that were re-estimated afted the initial estimation. Filter out the rest." />)}
                     </label>
                   </div>
                 )}
@@ -231,7 +302,7 @@ function App() {
                 />
                 Color by Phases
 
-                {!isColoringEnabled && !isTypesEnabled && (<InfoIcon text="something really helpful" />)}
+                {!isColoringEnabled && !isTypesEnabled && (<InfoIcon text="Enables node coloring based on its Phase. It cannot be enabled together with coloring by Types." />)}
               </label>
 
               {/* The Legend: Only shows Colors & Names (No Inputs) */}
@@ -277,7 +348,7 @@ function App() {
                   />
                   Color by Types
 
-                  {!isTypesEnabled && !isColoringEnabled && (<InfoIcon text="something really helpful" />)}
+                  {!isTypesEnabled && !isColoringEnabled && (<InfoIcon text="Enables node coloring based on its type. It cannot be turned on together with coloring by Phases." />)}
                 </label>
 
                 {isTypesEnabled && (
@@ -324,12 +395,12 @@ function App() {
 
           </div>
           <div className="filter-box" style={{background: '#f8f9fa', padding: '10px', borderRadius: '6px', marginBottom: '5px', border: '1px solid #e9ecef', fontSize: '0.9rem'}}>
-              <label style={{ display: 'flex', flexDirection: 'column', fontWeight: 'bold', marginBottom: '5px', cursor: 'pointer' }}>
+              <label style={{ display: 'flex', flexDirection: 'column', fontWeight: 'bold', marginBottom: '5px', cursor: 'pointer'}}>
                 Size Nodes By:
                 <select 
                   value={sizeMetric} 
                   onChange={(e) => setSizeMetric(e.target.value)}
-                  style={{ marginTop: '8px', padding: '6px', borderRadius: '4px', border: '1px solid #ccc', cursor: 'pointer' }}
+                  style={{ marginTop: '8px', padding: '6px', borderRadius: '4px', border: '1px solid #ccc', cursor: 'pointer', background: 'white', color: 'black' }}
                 >
                   <option value="size">Uniform Size (Reset)</option>
                   <option value="degree">Degree</option>

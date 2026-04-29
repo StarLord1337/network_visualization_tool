@@ -36,7 +36,8 @@ export interface FilterState {
   maxTime: number;    
   currentTime: number; 
   isPlaying: boolean;
-  colorMode: "phase" | "sprint"; 
+  colorMode: "phase" | "sprint";
+  playbackSpeed: number; 
 }
 
 export interface DisplayGraphProps {
