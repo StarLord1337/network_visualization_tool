@@ -12,7 +12,7 @@ This is a standalone frontend application. To run it locally, you only need to h
 
 **1. Clone the repository**
 ```bash
-git clone [https://github.com/StarLord1337/dp_visualization.git](https://github.com/StarLord1337/dp_visualization.git)
+git clone [https://github.com/StarLord1337/network_visualization_tool.git](https://github.com/StarLord1337/network_visualization_tool.git)
 ```
 
 **2. Navigate to the project directory**
