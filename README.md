@@ -31,6 +31,7 @@ npm run dev
 ```
 
 **5. Access the application**
-```bash
+
+
 Once the server starts, open your browser and navigate to the localhost address provided in your terminal (usually [http://localhost:3000] or [http://localhost:5173]).
-```
+
