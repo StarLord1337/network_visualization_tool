@@ -2,7 +2,7 @@
   max-width: 100vw;
   margin: 0 auto;
   --header-height: 60px;
-  --sidebar-width: 300px; /* Or 25% if you prefer relative */
+  --sidebar-width: 300px;
   --bg-color: #f8f9fa;
   --border-color: #e9ecef;
 }
@@ -48,7 +48,7 @@
   flex-direction: column;
   height: 100vh;
   width: 100vw;
-  overflow: hidden; /* Prevents whole-page scrolling */
+  overflow: hidden;
 }
 
 .app-header {
@@ -59,14 +59,14 @@
   align-items: center;
   padding: 0 20px;
   justify-content: space-between;
-  flex-shrink: 0; /* Prevents header from shrinking */
+  flex-shrink: 0;
   z-index: 10;
 }
 
 .content-wrapper {
   display: flex;
-  flex: 1; /* Takes up all remaining height */
-  overflow: hidden; /* Important! Keeps scrollbars inside panels, not on body */
+  flex: 1; 
+  overflow: hidden;
 }
 
 .action-btn {
@@ -84,8 +84,8 @@
   margin-right: 3px;
 }
 .react-sigma-control {
-  background-color: #333 !important; /* Dark background */
-  color: black !important;           /* Icon color */
+  background-color: #333 !important; 
+  color: black !important;          
   border: 1px solid #555 !important;
   border-radius: 4px !important;
   width: 30px !important;
@@ -95,11 +95,10 @@
 }
 
 .react-sigma-control:hover {
-  background-color: #484848 !important; /* Your brand color */
+  background-color: #484848 !important;
   border-color: #484848 !important;
 }
 
-/* Fix the SVG icon size/color inside if needed */
 .react-sigma-control svg {
   fill: black !important;
   width: 14px;
@@ -127,7 +126,6 @@
   font-size: 11px;
   font-weight: bold;
   font-family: serif;
-  /* Removed margin-left here because we handle it in the component */
   cursor: help;
   position: relative;
   flex-shrink: 0; 
@@ -137,7 +135,6 @@
   background-color: #64748b;
 }
 
-/* The Popup Box - Anchored Right */
 .info-icon .tooltip-text {
   visibility: hidden;
   width: 200px;
@@ -147,30 +144,24 @@
   padding: 8px 12px;
   border-radius: 6px;
   
-  /* Positioning: Show above, aligned to the right edge */
   position: absolute;
   z-index: 1000;
   bottom: 135%; 
-  right: -5px; /* Aligns with the right edge of the icon */
-  left: auto;  /* Overrides any default centering */
-  
-  /* Animation */
+  right: -5px;
+  left: auto; 
   opacity: 0;
   transition: opacity 0.2s;
-  
-  /* Text Styling */
   font-weight: normal;
   font-size: 0.75rem;
   line-height: 1.4;
   box-shadow: 0 4px 6px rgba(0,0,0,0.15);
 }
 
-/* The Triangle Arrow - Anchored Right */
 .info-icon .tooltip-text::after {
   content: "";
   position: absolute;
   top: 100%; 
-  right: 8px; /* Positions the arrow near the right corner */
+  right: 8px; 
   margin-left: 0;
   border-width: 5px;
   border-style: solid;

@@ -1,4 +1,3 @@
-// src/hooks/useGraphHover.ts
 import { useState, useEffect, useMemo } from "react";
 import { useRegisterEvents, useSigma } from "@react-sigma/core";
 
@@ -27,7 +26,7 @@ export const useGraphHover = () => {
     }
     
     const neighbors = new Set(graph.neighbors(hoveredNode));
-    neighbors.add(hoveredNode); // Add self
+    neighbors.add(hoveredNode);
     
     const edges = new Set(graph.edges(hoveredNode));
     

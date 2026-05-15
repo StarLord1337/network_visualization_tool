@@ -41,13 +41,13 @@ export const GraphMasterController = ({ filters, coloringEnabled, typesEnabled, 
         res.hidden = true;
         res.label = "";
         res.zIndex = 0;
-        return res; // Stop here if hidden
+        return res;
       }
 
       let baseSize = 5;
 
       if (sizeMetric === "size") {
-        baseSize = 5; // Reset to a uniform size
+        baseSize = 5;
       } else {
         const rawValue = Number(attributes[sizeMetric as keyof typeof attributes]) || 0;
         let normalized = (rawValue - minVal) / (maxVal - minVal);
@@ -91,7 +91,6 @@ export const GraphMasterController = ({ filters, coloringEnabled, typesEnabled, 
         return res;
       }
 
-      // Your existing Hover Logic
       if (hoveredNode) {
         if (edges.has(edge)) {
           res.color = "#FA4F40";
